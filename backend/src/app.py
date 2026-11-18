@@ -221,8 +221,32 @@ async def update_task(task_id: int, updates: TaskUpdate) -> Task:
       uniquement les champs envoyés, par exemple {"status": "done"}.
     """
     # TODO: Votre code ici
-    raise HTTPException(status_code=501, detail="Update not implemented yet - complete this function!")
-
+    
+    if task_id not in tasks_db :
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    
+    existing_task = tasks_db[task_id]
+    clients_updates = updates.model_dump(exclude_unset=True)
+    
+    clients_updates["updated_at"] = datetime.now(timezone.utc)
+    
+    existing_task.title = clients_updates.get("title", existing_task.title)
+    existing_task.status = clients_updates.get("status", existing_task.status)
+    existing_task.description = clients_updates.get("description", existing_task.description)
+    existing_task.priority = clients_updates.get("priority", existing_task.priority)
+    existing_task.assignee = clients_updates.get("assignee", existing_task.assignee)
+    existing_task.due_date = clients_updates.get("due_date", existing_task.due_date)
+    
+    
+    return existing_task
+    
+    # raise HTTPException(status_code=501, detail="Update not implemented yet - complete this function!")
+# title: Optional[str] = Field(None, min_length=1, max_length=200)
+#     description: Optional[str] = Field(None, max_length=1000)
+#     status: Optional[TaskStatus] = None
+#     priority: Optional[TaskPriority] = None
+#     assignee: Optional[str] = Field(None, max_length=100)
+#     due_date: Op
 
 @app.delete("/tasks/{task_id}", status_code=204)
 async def delete_task(task_id: int):
@@ -238,7 +262,16 @@ async def delete_task(task_id: int):
     Indice : get_task(), plus haut dans ce fichier, vérifie déjà si une tâche existe.
     """
     # TODO: Votre code ici
-    raise HTTPException(status_code=501, detail="Delete not implemented yet - complete this function!")
+    
+    # task = tasks_db.get(task_id)
+    if task_id not in tasks_db :
+        raise HTTPException(status_code=404, detail=f"Task {task_id} not found")
+    
+    del tasks_db[task_id]
+        
+    # raise HTTPException(status_code=204, detail=f"Task {task_id} deleted successfully")
+    
+    # raise HTTPException(status_code=501, detail="Delete not implemented yet - complete this function!")
 
 
 if __name__ == "__main__":  # pragma: no cover (lancement manuel, pas testé)
