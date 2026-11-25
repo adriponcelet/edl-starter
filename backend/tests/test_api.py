@@ -35,10 +35,10 @@ def test_root_endpoint(client):
 
 def test_health_check(client):
     """EXEMPLE : Un autre test de point de terminaison GET simple."""
-    response = client.get("/health")
+    response = client.get("/health")        
 
     assert response.status_code == 200
-    assert response.json()["status"] == "healthy"
+    assert response.json()["status"] == "BROKEN"  # ❌ Faux exprès !
 
 
 def test_create_task(client):
@@ -276,11 +276,6 @@ def test_filter_tasks_by_status(client):
     assert tasks[0]["status"] == "done"
     assert tasks[0]["title"] == "Tâche finie"
     
-    
-def test_health_check(client):
-    response = client.get("/health")
-    assert response.status_code == 200
-    assert response.json()["status"] == "BROKEN"  # ❌ Faux exprès !
     
     
 
