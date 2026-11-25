@@ -277,6 +277,12 @@ def test_filter_tasks_by_status(client):
     assert tasks[0]["title"] == "Tâche finie"
     
     
+def test_health_check(client):
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json()["status"] == "BROKEN"  # ❌ Faux exprès !
+    
+    
 
 # =============================================================================
 # BONUS (si vous avez fini)
