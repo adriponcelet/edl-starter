@@ -34,4 +34,6 @@ jobs:
 
       # TODO : Lancez les tests
       - name: Lancer test
-        run : uv run pytest 
+        run : |
+            cd backend
+            uv run pytest 
